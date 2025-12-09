@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { FaStar, FaMapMarkerAlt, FaPhone, FaClock } from 'react-icons/fa';
 import { getHospitals } from '../services/api';
@@ -6,6 +7,8 @@ import { getHospitals } from '../services/api';
 const ExtraHospital = () => {
     const [hospitals, setHospitals] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchHospitals = async () => {
@@ -69,7 +72,10 @@ const ExtraHospital = () => {
                         </div>
 
                         <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-                            <button className="w-full bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 py-2 rounded-lg font-medium hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors">
+                            <button
+                                onClick={() => navigate(`/hospitals/${hospital._id}`)}
+                                className="w-full bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 py-2 rounded-lg font-medium hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors"
+                            >
                                 View Details
                             </button>
                         </div>

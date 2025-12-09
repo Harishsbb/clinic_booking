@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api, { createDoctor, updateDoctor, deleteDoctor } from '../services/api';
+import api, { createDoctor, updateDoctor, deleteDoctor, getAllAppointments } from '../services/api';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Card from '../components/ui/Card';
@@ -7,6 +7,7 @@ import { FaUserMd, FaUserInjured, FaCalendarCheck, FaEdit, FaTrash } from 'react
 
 const AdminDashboard = () => {
     const [doctors, setDoctors] = useState([]);
+    const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -20,19 +21,23 @@ const AdminDashboard = () => {
         availability: ''
     });
 
-    const fetchDoctors = async () => {
+    const fetchData = async () => {
         try {
-            const res = await api.get('/doctors');
-            setDoctors(res.data);
+            const [doctorsRes, appointmentsRes] = await Promise.all([
+                api.get('/doctors'),
+                getAllAppointments()
+            ]);
+            setDoctors(doctorsRes.data);
+            setAppointments(appointmentsRes.data);
         } catch (err) {
-            console.error('Error fetching doctors:', err);
+            console.error('Error fetching data:', err);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchDoctors();
+        fetchData();
     }, []);
 
     const handleInputChange = (e) => {
@@ -56,7 +61,7 @@ const AdminDashboard = () => {
             }
             setShowModal(false);
             resetForm();
-            fetchDoctors();
+            fetchData();
         } catch (err) {
             console.error('Error saving doctor:', err);
             alert('Failed to save doctor');
@@ -82,7 +87,7 @@ const AdminDashboard = () => {
             try {
                 await deleteDoctor(id);
                 alert('Doctor deleted successfully');
-                fetchDoctors();
+                fetchData();
             } catch (err) {
                 console.error('Error deleting doctor:', err);
                 alert('Failed to delete doctor');
@@ -129,7 +134,7 @@ const AdminDashboard = () => {
                         </div>
                         <div>
                             <p className="text-sm text-gray-500 font-medium">Total Patients</p>
-                            <h3 className="text-2xl font-bold text-gray-900">2,040</h3>
+                            <h3 className="text-2xl font-bold text-gray-900">{new Set(appointments.map(a => a.user?._id)).size}</h3>
                         </div>
                     </Card>
                     <Card className="p-6 flex items-center gap-4 border-l-4 border-purple-500">
@@ -138,10 +143,51 @@ const AdminDashboard = () => {
                         </div>
                         <div>
                             <p className="text-sm text-gray-500 font-medium">Appointments</p>
-                            <h3 className="text-2xl font-bold text-gray-900">850</h3>
+                            <h3 className="text-2xl font-bold text-gray-900">{appointments.length}</h3>
                         </div>
                     </Card>
                 </div>
+
+                {/* Appointments Table */}
+                <Card className="p-6">
+                    <h3 className="text-xl font-bold text-gray-800 mb-6 font-heading">Recent Appointments</h3>
+                    {appointments.length === 0 ? (
+                        <p className="text-gray-500">No appointments found.</p>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead>
+                                    <tr className="text-gray-400 text-sm border-b border-gray-100">
+                                        <th className="pb-4 font-medium pl-2">Patient Name</th>
+                                        <th className="pb-4 font-medium">Doctor</th>
+                                        <th className="pb-4 font-medium">Date & Time</th>
+                                        <th className="pb-4 font-medium">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-sm">
+                                    {appointments.map((apt) => (
+                                        <tr key={apt._id} className="border-b border-gray-50 last:border-none hover:bg-gray-50 transition-colors">
+                                            <td className="py-4 pl-2 font-medium text-gray-700">
+                                                {apt.user ? apt.user.name : 'Unknown Patient'}
+                                            </td>
+                                            <td className="py-4 text-gray-600">
+                                                {apt.doctor ? apt.doctor.name : 'Unknown Doctor'}
+                                            </td>
+                                            <td className="py-4 text-gray-500">
+                                                {new Date(apt.date).toLocaleString()}
+                                            </td>
+                                            <td className="py-4">
+                                                <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                                    Confirmed
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </Card>
 
                 {/* Doctors Table */}
                 <Card className="p-6">

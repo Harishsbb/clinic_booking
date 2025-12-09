@@ -100,16 +100,16 @@ const PatientDashboard = () => {
                         ) : (
                             <div className="space-y-6">
                                 {doctors.map((doctor) => (
-                                    <div key={doctor._id} className="flex items-center gap-4 p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                                        <div className="h-10 w-10 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center text-gray-500 font-bold">
+                                    <div key={doctor._id} className="flex items-center gap-4 p-3 bg-gray-50/50 hover:bg-white rounded-xl border border-transparent hover:border-gray-100 transition-all duration-200 group">
+                                        <div className="h-12 w-12 rounded-full bg-white border-2 border-primary-100 text-primary-600 flex-shrink-0 flex items-center justify-center font-bold text-lg shadow-sm group-hover:scale-105 transition-transform">
                                             {doctor.name.charAt(0)}
                                         </div>
-                                        <div className="flex-1">
-                                            <h4 className="text-sm font-bold text-gray-800">{doctor.name}</h4>
-                                            <p className="text-xs text-gray-500">{doctor.specialization || 'General'}</p>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="text-gray-900 font-bold truncate">{doctor.name}</h4>
+                                            <p className="text-sm text-gray-500 truncate">{doctor.specialization || 'General'}</p>
                                         </div>
                                         <Link to="/booking" state={{ doctorId: doctor._id }}>
-                                            <Button size="sm" variant="outline">Book</Button>
+                                            <Button size="sm" variant="outline" className="whitespace-nowrap border-primary-200 text-primary-700 hover:bg-primary-50">Book</Button>
                                         </Link>
                                     </div>
                                 ))}

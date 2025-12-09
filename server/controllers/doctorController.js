@@ -2,7 +2,12 @@ const Doctor = require('../models/Doctor');
 
 exports.getAllDoctors = async (req, res) => {
     try {
-        const doctors = await Doctor.find();
+        const { hospital } = req.query;
+        let query = {};
+        if (hospital) {
+            query.hospital = hospital;
+        }
+        const doctors = await Doctor.find(query);
         res.json(doctors);
     } catch (err) {
         res.status(500).send('Server Error');

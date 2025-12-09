@@ -13,6 +13,7 @@ import './App.css';
 
 import { ThemeProvider } from './context/ThemeContext';
 import ExtraHospital from './pages/ExtraHospital';
+import HospitalDetails from './pages/HospitalDetails';
 import Settings from './pages/Settings';
 
 function App() {
@@ -40,6 +41,11 @@ function App() {
           <Route path="/hospitals" element={
             <Layout>
               <ExtraHospital />
+            </Layout>
+          } />
+          <Route path="/hospitals/:id" element={
+            <Layout>
+              <HospitalDetails />
             </Layout>
           } />
           <Route path="/booking" element={

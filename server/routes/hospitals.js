@@ -15,6 +15,25 @@ router.get('/', async (req, res) => {
     }
 });
 
+// @route   GET /api/hospitals/:id
+// @desc    Get hospital by ID
+// @access  Public
+router.get('/:id', async (req, res) => {
+    try {
+        const hospital = await Hospital.findById(req.params.id);
+        if (!hospital) {
+            return res.status(404).json({ msg: 'Hospital not found' });
+        }
+        res.json(hospital);
+    } catch (err) {
+        console.error(err.message);
+        if (err.kind === 'ObjectId') {
+            return res.status(404).json({ msg: 'Hospital not found' });
+        }
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route   POST /api/hospitals
 // @desc    Add a hospital
 // @access  Public (should be private in prod)

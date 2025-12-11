@@ -22,7 +22,9 @@ const Doctors = () => {
         bio: '',
         availability: '',
         hospital: '',
-        district: ''
+        hospital: '',
+        district: '',
+        email: ''
     });
 
     const fetchDoctors = async () => {
@@ -95,7 +97,9 @@ const Doctors = () => {
             bio: doctor.bio || '',
             availability: doctor.availability ? doctor.availability.join(', ') : '',
             hospital: doctor.hospital || '',
-            district: doctor.district || ''
+            hospital: doctor.hospital || '',
+            district: doctor.district || '',
+            email: doctor.email || ''
         });
         setCurrentDoctorId(doctor._id);
         setIsEditing(true);
@@ -116,7 +120,7 @@ const Doctors = () => {
     };
 
     const resetForm = () => {
-        setNewDoctor({ name: '', specialty: '', fee: '', image: '', bio: '', availability: '', hospital: '', district: '' });
+        setNewDoctor({ name: '', specialty: '', fee: '', image: '', bio: '', availability: '', hospital: '', district: '', email: '' });
         setIsEditing(false);
         setCurrentDoctorId(null);
     };
@@ -203,6 +207,15 @@ const Doctors = () => {
                                 onChange={handleInputChange}
                                 required
                                 placeholder="Dr. John Doe"
+                            />
+                            <Input
+                                label="Email"
+                                name="email"
+                                type="email"
+                                value={newDoctor.email}
+                                onChange={handleInputChange}
+                                required
+                                placeholder="doctor@clinic.com"
                             />
                             <Input
                                 label="Specialty"

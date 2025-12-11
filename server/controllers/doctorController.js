@@ -7,12 +7,14 @@ exports.getAllDoctors = async (req, res) => {
         if (hospital) {
             query.hospital = hospital;
         }
-        const doctors = await Doctor.find(query);
+        const doctors = await Doctor.find(query).lean();
         res.json(doctors);
     } catch (err) {
         res.status(500).send('Server Error');
     }
 };
+
+const DoctorAuth = require('../models/DoctorAuth');
 
 exports.createDoctor = async (req, res) => {
     try {
@@ -20,13 +22,28 @@ exports.createDoctor = async (req, res) => {
         const lastDoctor = await Doctor.findOne().sort({ docId: -1 });
         const nextDocId = lastDoctor && lastDoctor.docId ? lastDoctor.docId + 1 : 1;
 
+        const { email, ...doctorData } = req.body;
+
         const newDoctor = new Doctor({
-            ...req.body,
-            docId: nextDocId
+            ...doctorData,
+            docId: nextDocId,
+            email: email // Save email in Doctor model too for reference
         });
         const doctor = await newDoctor.save();
+
+        // Create Auth entry
+        if (email) {
+            const newAuth = new DoctorAuth({
+                doctor: doctor._id,
+                email: email,
+                password: '12345' // Default password
+            });
+            await newAuth.save();
+        }
+
         res.json(doctor);
     } catch (err) {
+        console.error(err);
         res.status(500).send('Server Error');
     }
 };

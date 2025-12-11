@@ -62,13 +62,13 @@ const seedDoctors = async () => {
 
         console.log('Connected to MongoDB...');
 
-        // Optional: Clear existing doctors? No, user said "add".
-        // But to avoid duplicates if run multiple times, maybe check?
-        // For now, I'll just add them.
+        // Clear existing doctors and auths to start fresh with HD images
+        console.log('Clearing existing doctor data...');
+        await Doctor.deleteMany({});
+        await DoctorAuth.deleteMany({});
 
-        // Find the highest docId to start incrementing
-        const lastDoctor = await Doctor.findOne().sort({ docId: -1 });
-        let nextDocId = lastDoctor && lastDoctor.docId ? lastDoctor.docId + 1 : 1;
+        // Find the highest docId to start incrementing (will be 1 since we cleared)
+        let nextDocId = 1;
 
         for (let i = 0; i < tamilDoctors.length; i++) {
             const docInfo = tamilDoctors[i];
@@ -76,11 +76,11 @@ const seedDoctors = async () => {
             const hospital = hospitals[Math.floor(Math.random() * hospitals.length)];
             const district = districts[Math.floor(Math.random() * districts.length)];
 
-            // Generate a random image from randomuser.me
-            // Using a fixed seed or ID to keep it consistent if possible, but random is fine.
-            // We use the index + 50 to avoid first few common ones if any.
-            const imageId = i + 10;
-            const image = `https://randomuser.me/api/portraits/${docInfo.gender}/${imageId}.jpg`;
+            // Use xsgames.co for better quality "HD" looking avatars
+            // They have about 75 images per gender
+            const imageId = (i % 50) + 1;
+            const genderDir = docInfo.gender === 'men' ? 'male' : 'female';
+            const image = `https://xsgames.co/randomusers/assets/avatars/${genderDir}/${imageId}.jpg`;
 
             // Generate email
             const nameParts = docInfo.name.replace('Dr.', '').replace(/\./g, '').trim().split(' ');

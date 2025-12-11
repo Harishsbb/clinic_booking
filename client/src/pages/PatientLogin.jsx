@@ -38,9 +38,9 @@ const PatientLogin = () => {
     };
 
     return (
-        <div className="min-h-screen flex bg-gray-50 animate-fade-in">
+        <div className="min-h-screen flex bg-transparent animate-fade-in">
             {/* Left Side - Form */}
-            <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white w-full lg:w-1/2">
+            <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white/90 backdrop-blur-sm w-full lg:w-1/2">
                 <div className="mx-auto w-full max-w-sm lg:w-96">
                     <div>
                         <h2 className="mt-6 text-3xl font-extrabold text-gray-900 font-heading">
@@ -89,7 +89,10 @@ const PatientLogin = () => {
                                     </Button>
                                 </div>
                             </form>
-                            <div className="mt-6 text-center">
+                            <div className="mt-6 flex flex-col items-center gap-2">
+                                <Link to="/doctor/login" className="text-sm font-medium text-primary-600 hover:text-primary-500">
+                                    Doctor Login
+                                </Link>
                                 <Link to="/admin/login" className="text-sm text-gray-500 hover:text-primary-600">
                                     Hospital Staff Login
                                 </Link>

@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+        <div className="min-h-screen transition-colors duration-300">
             <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
             <Topbar onMenuClick={() => setSidebarOpen(true)} />
             <main className="lg:pl-64 pt-16 min-h-screen transition-all duration-300">

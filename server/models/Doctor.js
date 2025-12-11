@@ -9,7 +9,24 @@ const DoctorSchema = new mongoose.Schema({
     availability: [{ type: String }], // e.g., ["Monday 10am-2pm"]
     docId: { type: Number, unique: true },
     hospital: { type: String },
-    district: { type: String }
+    district: { type: String },
+    email: { type: String, unique: true, sparse: true }, // sparse: true allows existing docs to lack email initially
+    password: { type: String },
+    role: { type: String, default: 'doctor' }
 });
+
+DoctorSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) {
+        next();
+    }
+    const bcrypt = require('bcryptjs');
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
+
+DoctorSchema.methods.matchPassword = async function (enteredPassword) {
+    const bcrypt = require('bcryptjs');
+    return await bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = mongoose.model('Doctor', DoctorSchema);

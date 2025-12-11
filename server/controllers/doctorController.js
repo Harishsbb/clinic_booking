@@ -48,3 +48,21 @@ exports.deleteDoctor = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
+
+exports.updateAvailability = async (req, res) => {
+    try {
+        const { availability } = req.body;
+        const doctor = await Doctor.findById(req.params.id);
+
+        if (!doctor) {
+            return res.status(404).json({ msg: 'Doctor not found' });
+        }
+
+        doctor.availability = availability;
+        await doctor.save();
+        res.json(doctor);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+};

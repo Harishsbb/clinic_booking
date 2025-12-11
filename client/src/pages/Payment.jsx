@@ -6,7 +6,7 @@ import { makePayment } from '../services/api';
 const Payment = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' or 'upi'
+    const [paymentMethod, setPaymentMethod] = useState('upi'); // 'upi' or 'card'
     const [formData, setFormData] = useState({
         cardName: '',
         cardNumber: '',
@@ -66,17 +66,6 @@ const Payment = () => {
                 <div className="flex gap-4 mb-8">
                     <button
                         type="button"
-                        onClick={() => setPaymentMethod('card')}
-                        className={`flex-1 py-3 px-4 rounded-lg border-2 flex items-center justify-center gap-2 transition-all ${paymentMethod === 'card'
-                            ? 'border-primary-600 bg-primary-50 text-primary-700'
-                            : 'border-gray-200 hover:border-gray-300 text-gray-600'
-                            }`}
-                    >
-                        <FaCreditCard />
-                        <span className="font-medium">Credit Card</span>
-                    </button>
-                    <button
-                        type="button"
                         onClick={() => setPaymentMethod('upi')}
                         className={`flex-1 py-3 px-4 rounded-lg border-2 flex items-center justify-center gap-2 transition-all ${paymentMethod === 'upi'
                             ? 'border-primary-600 bg-primary-50 text-primary-700'
@@ -85,6 +74,17 @@ const Payment = () => {
                     >
                         <FaMobileAlt />
                         <span className="font-medium">UPI</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setPaymentMethod('card')}
+                        className={`flex-1 py-3 px-4 rounded-lg border-2 flex items-center justify-center gap-2 transition-all ${paymentMethod === 'card'
+                            ? 'border-primary-600 bg-primary-50 text-primary-700'
+                            : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                            }`}
+                    >
+                        <FaCreditCard />
+                        <span className="font-medium">Credit Card</span>
                     </button>
                 </div>
 

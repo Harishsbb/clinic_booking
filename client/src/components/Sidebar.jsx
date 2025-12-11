@@ -5,6 +5,7 @@ import { FaHome, FaUserMd, FaCalendarAlt, FaCog, FaSignOutAlt, FaCreditCard, FaT
 const Sidebar = ({ isOpen, onClose }) => {
     const location = useLocation();
     const navigate = useNavigate();
+    const role = localStorage.getItem('role');
 
     const isActive = (path) => {
         return location.pathname === path
@@ -40,7 +41,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
             {/* Sidebar */}
             <div className={`
-                w-64 bg-white dark:bg-gray-800 h-screen fixed left-0 top-0 border-r border-gray-200 dark:border-gray-700 flex flex-col z-30 shadow-sm transition-transform duration-300 ease-in-out
+                w-64 bg-white/90 backdrop-blur-md dark:bg-gray-800/90 h-screen fixed left-0 top-0 border-r border-gray-200 dark:border-gray-700 flex flex-col z-30 shadow-sm transition-transform duration-300 ease-in-out
                 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
             `}>
                 <div className="h-16 flex items-center justify-between px-6 border-b border-gray-100">
@@ -57,11 +58,19 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu</p>
                     </div>
 
-                    <NavItem to="/dashboard" icon={FaHome} label="Dashboard" />
-                    <NavItem to="/doctors" icon={FaUserMd} label="Doctors" />
-                    <NavItem to="/hospitals" icon={FaHospital} label="Hospitals" />
-                    <NavItem to="/booking" icon={FaCalendarAlt} label="Appointment" />
-                    <NavItem to="/payment" icon={FaCreditCard} label="Payment" />
+                    {role === 'doctor' ? (
+                        <>
+                            <NavItem to="/doctor/dashboard" icon={FaHome} label="Dashboard" />
+                        </>
+                    ) : (
+                        <>
+                            <NavItem to="/dashboard" icon={FaHome} label="Dashboard" />
+                            <NavItem to="/doctors" icon={FaUserMd} label="Doctors" />
+                            <NavItem to="/hospitals" icon={FaHospital} label="Hospitals" />
+                            <NavItem to="/booking" icon={FaCalendarAlt} label="Appointment" />
+                            <NavItem to="/payment" icon={FaCreditCard} label="Payment" />
+                        </>
+                    )}
 
                     <div className="mt-8 px-6 mb-2">
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Settings</p>

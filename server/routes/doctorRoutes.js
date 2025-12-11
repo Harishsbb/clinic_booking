@@ -5,6 +5,7 @@ const doctorController = require('../controllers/doctorController');
 router.get('/', doctorController.getAllDoctors);
 router.post('/', doctorController.createDoctor);
 router.put('/:id', doctorController.updateDoctor);
+router.put('/:id/availability', doctorController.updateAvailability);
 router.delete('/:id', doctorController.deleteDoctor);
 
 module.exports = router;

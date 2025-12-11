@@ -1,6 +1,8 @@
-const Appointment = require('../models/Appointment');
 
+const Appointment = require('../models/Appointment');
 const Doctor = require('../models/Doctor');
+
+const { sendBookingConfirmation } = require('../utils/emailService');
 
 exports.createAppointment = async (req, res) => {
     try {
@@ -21,6 +23,25 @@ exports.createAppointment = async (req, res) => {
             date
         });
         await appointment.save();
+
+        // Send Confirmation Email
+        // Fetch user and doctor details for the email
+        const user = await require('../models/User').findById(userId);
+        const doctor = await Doctor.findById(doctorId);
+
+        if (user && doctor) {
+            const appointmentDate = new Date(date).toLocaleDateString();
+            const appointmentTime = new Date(date).toLocaleTimeString();
+
+            // Run asynchronously, don't block response
+            sendBookingConfirmation(user.email, {
+                patientName: user.name,
+                doctorName: doctor.name,
+                date: appointmentDate,
+                time: appointmentTime
+            });
+        }
+
         res.json(appointment);
     } catch (err) {
         console.error(err);
@@ -30,11 +51,43 @@ exports.createAppointment = async (req, res) => {
 
 exports.getAppointments = async (req, res) => {
     try {
-        const { userId } = req.query;
-        const query = userId ? { user: userId } : {};
-        const appointments = await Appointment.find(query).populate('doctor').populate('user');
+        const { doctorId, userId } = req.query;
+        let query = {};
+        if (doctorId) {
+            query.doctor = doctorId;
+        }
+        if (userId) {
+            query.user = userId;
+        }
+        // Populate user details for doctor view, and doctor details for patient view if needed
+        const appointments = await Appointment.find(query)
+            .populate('user', 'name email')
+            .populate('doctor', 'name');
+
         res.json(appointments);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.updateStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const appointment = await Appointment.findById(req.params.id);
+
+        if (!appointment) {
+            return res.status(404).json({ msg: 'Appointment not found' });
+        }
+
+        appointment.status = status;
+        if (status === 'completed') {
+            appointment.visitedAt = new Date();
+        }
+        await appointment.save();
+        res.json(appointment);
     } catch (err) {
+        console.error(err);
         res.status(500).send('Server Error');
     }
 };

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getUserAppointments, getDoctors } from '../services/api';
@@ -10,6 +11,8 @@ const PatientDashboard = () => {
     const [loading, setLoading] = useState(true);
     const userId = localStorage.getItem('userId');
     const userName = localStorage.getItem('name') || 'Patient';
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,8 +34,19 @@ const PatientDashboard = () => {
         fetchData();
     }, [userId]);
 
+    const handleCancel = async (id) => {
+        if (!window.confirm("Are you sure you want to cancel this appointment?")) return;
+        try {
+            await axios.put(`http://localhost:5000/api/appointments/${id}/status`, { status: 'cancelled' });
+            setAppointments(appointments.map(apt => apt._id === id ? { ...apt, status: 'cancelled' } : apt));
+        } catch (err) {
+            console.error("Error cancelling appointment", err);
+            alert("Failed to cancel appointment");
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-transparent py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto space-y-8">
                 <div className="flex justify-between items-center">
                     <div>
@@ -65,6 +79,7 @@ const PatientDashboard = () => {
                                             <th className="pb-4 font-medium pl-2">Doctor</th>
                                             <th className="pb-4 font-medium">Date & Time</th>
                                             <th className="pb-4 font-medium">Status</th>
+                                            <th className="pb-4 font-medium text-right pr-2">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="text-sm">
@@ -77,9 +92,22 @@ const PatientDashboard = () => {
                                                     {new Date(apt.date).toLocaleString()}
                                                 </td>
                                                 <td className="py-4">
-                                                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
-                                                        Upcoming
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${apt.status === 'completed' ? 'bg-blue-100 text-blue-700' :
+                                                        apt.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                                                            'bg-green-100 text-green-700'
+                                                        }`}>
+                                                        {apt.status || 'Upcoming'}
                                                     </span>
+                                                </td>
+                                                <td className="py-4 text-right pr-2">
+                                                    {apt.status !== 'cancelled' && apt.status !== 'completed' && (
+                                                        <button
+                                                            onClick={() => handleCancel(apt._id)}
+                                                            className="text-red-600 hover:text-red-800 text-xs font-bold uppercase"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}

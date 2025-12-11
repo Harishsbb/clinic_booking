@@ -31,9 +31,9 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-transparent flex flex-col">
       {/* Navbar (Simplified for Home) */}
-      <nav className="bg-white shadow-sm py-4 px-4 lg:px-8 flex justify-between items-center relative z-20">
+      <nav className="bg-white/80 backdrop-blur-md shadow-sm py-4 px-4 lg:px-8 flex justify-between items-center relative z-20">
         <div className="text-2xl font-bold text-primary-600 font-heading flex items-center gap-2">
           <span className="text-3xl">M</span> MediCare+
         </div>

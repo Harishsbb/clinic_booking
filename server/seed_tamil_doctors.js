@@ -76,21 +76,11 @@ const seedDoctors = async () => {
             const hospital = hospitals[Math.floor(Math.random() * hospitals.length)];
             const district = districts[Math.floor(Math.random() * districts.length)];
 
-            // Use local custom images
-            // We have 4 images: doc1.png (Male), doc2.png (Female), doc3.png (Male), doc4.png (Female)
-            let imagePath;
-            if (docInfo.gender === 'men') {
-                // Randomly pick doc1 or doc3
-                const pick = Math.random() > 0.5 ? 1 : 3;
-                imagePath = `/doctors/doc${pick}.png`;
-            } else {
-                // Randomly pick doc2 or doc4
-                const pick = Math.random() > 0.5 ? 2 : 4;
-                imagePath = `/doctors/doc${pick}.png`;
-            }
-
-            // Note: In production, these are served from the public folder
-            const image = imagePath;
+            // Use randomuser.me for REAL human photos
+            // We use the index + 10 to get different faces
+            const imageId = (i % 90) + 1; // They have about 99 images
+            const genderDir = docInfo.gender === 'men' ? 'men' : 'women';
+            const image = `https://randomuser.me/api/portraits/${genderDir}/${imageId}.jpg`;
 
             // Generate email
             const nameParts = docInfo.name.replace('Dr.', '').replace(/\./g, '').trim().split(' ');

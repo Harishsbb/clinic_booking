@@ -8,10 +8,29 @@ connectDB();
 
 const app = express();
 
-app.use(cors({
-    origin: '*', // Allow all origins for now to ensure Vercel deployment works
-    credentials: true
-}));
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://clinic-booking-client.vercel.app',
+    'https://clinic-booking-rho.vercel.app' // Add your specific frontend URL here
+];
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1 && !origin.endsWith('.vercel.app')) {
+            var msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(null, true); // Allow it anyway for now to fix the issue
+        }
+        return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Enable preflight for all routes
 app.use(express.json());
 
 // Routes

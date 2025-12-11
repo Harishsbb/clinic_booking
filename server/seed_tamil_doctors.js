@@ -76,11 +76,21 @@ const seedDoctors = async () => {
             const hospital = hospitals[Math.floor(Math.random() * hospitals.length)];
             const district = districts[Math.floor(Math.random() * districts.length)];
 
-            // Use xsgames.co for better quality "HD" looking avatars
-            // They have about 75 images per gender
-            const imageId = (i % 50) + 1;
-            const genderDir = docInfo.gender === 'men' ? 'male' : 'female';
-            const image = `https://xsgames.co/randomusers/assets/avatars/${genderDir}/${imageId}.jpg`;
+            // Use local custom images
+            // We have 4 images: doc1.png (Male), doc2.png (Female), doc3.png (Male), doc4.png (Female)
+            let imagePath;
+            if (docInfo.gender === 'men') {
+                // Randomly pick doc1 or doc3
+                const pick = Math.random() > 0.5 ? 1 : 3;
+                imagePath = `/doctors/doc${pick}.png`;
+            } else {
+                // Randomly pick doc2 or doc4
+                const pick = Math.random() > 0.5 ? 2 : 4;
+                imagePath = `/doctors/doc${pick}.png`;
+            }
+
+            // Note: In production, these are served from the public folder
+            const image = imagePath;
 
             // Generate email
             const nameParts = docInfo.name.replace('Dr.', '').replace(/\./g, '').trim().split(' ');

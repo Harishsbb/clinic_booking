@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { createBooking } from '../services/api';
+import { createBooking, getDoctors } from '../services/api';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
-import Card from '../components/ui/Card';
+import { isSlotAvailable } from '../utils/availabilityValidator';
 
 const Booking = () => {
     const location = useLocation();
@@ -14,6 +14,20 @@ const Booking = () => {
     });
     const [fee, setFee] = useState(100); // Default fee
     const [loading, setLoading] = useState(false);
+    const [doctorAvailability, setDoctorAvailability] = useState([]);
+    const [doctors, setDoctors] = useState([]);
+
+    useEffect(() => {
+        const fetchDoctorsData = async () => {
+            try {
+                const res = await getDoctors();
+                setDoctors(res.data);
+            } catch (err) {
+                console.error("Failed to fetch doctors", err);
+            }
+        };
+        fetchDoctorsData();
+    }, []);
 
     useEffect(() => {
         if (location.state?.doctorId) {
@@ -22,7 +36,28 @@ const Booking = () => {
         if (location.state?.fee) {
             setFee(location.state.fee);
         }
+        if (location.state?.availability) {
+            setDoctorAvailability(location.state.availability);
+        }
     }, [location.state]);
+
+    // Update fee and availability when doctorId changes (e.g. manual entry or after fetch)
+    useEffect(() => {
+        if (formData.doctorId && doctors.length > 0) {
+            // Find doctor by docId (assuming input is docId) or _id
+            // The input placeholder says "Enter Doctor ID", usually people enter the visible ID (docId)
+            // But let's check both or stick to docId as per DoctorCard display
+            const doctor = doctors.find(d =>
+                String(d.docId) === String(formData.doctorId) ||
+                d._id === formData.doctorId
+            );
+
+            if (doctor) {
+                setFee(doctor.fee || 100);
+                setDoctorAvailability(doctor.availability || []);
+            }
+        }
+    }, [formData.doctorId, doctors]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,6 +74,17 @@ const Booking = () => {
                 navigate('/login');
                 return;
             }
+
+            // Validate Availability
+            if (doctorAvailability && doctorAvailability.length > 0) {
+                const isValid = isSlotAvailable(formData.date, doctorAvailability);
+                if (!isValid) {
+                    alert(`Doctor is not available at this time. Available: ${doctorAvailability.join(', ')}`);
+                    setLoading(false);
+                    return;
+                }
+            }
+
             await createBooking({ ...formData, userId });
             alert('Appointment booked successfully! Proceeding to payment.');
             navigate('/payment', { state: { fee } });
@@ -72,7 +118,6 @@ const Booking = () => {
                                     <Input
                                         id="doctorId"
                                         name="doctorId"
-                                        // label="Doctor ID" // Custom label handling above
                                         placeholder="Enter Doctor ID"
                                         value={formData.doctorId}
                                         onChange={handleChange}
@@ -93,14 +138,14 @@ const Booking = () => {
                                 </p>
                             </div>
 
-                            {location.state?.availability && (
+                            {doctorAvailability && doctorAvailability.length > 0 && (
                                 <div className="sm:col-span-6 bg-blue-50 p-5 rounded-lg border border-blue-100">
                                     <h4 className="text-sm font-bold text-blue-800 mb-3 flex items-center">
                                         <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" /></svg>
                                         Doctor's Availability
                                     </h4>
                                     <div className="flex flex-wrap gap-2">
-                                        {location.state.availability.map((slot, index) => (
+                                        {doctorAvailability.map((slot, index) => (
                                             <span key={index} className="px-3 py-1 bg-white text-blue-700 text-xs font-semibold rounded-full border border-blue-200 shadow-sm">
                                                 {slot}
                                             </span>

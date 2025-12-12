@@ -62,7 +62,7 @@ exports.getAppointments = async (req, res) => {
         // Populate user details for doctor view, and doctor details for patient view if needed
         const appointments = await Appointment.find(query)
             .populate('user', 'name email')
-            .populate('doctor', 'name');
+            .populate('doctor', 'name availability fee');
 
         res.json(appointments);
     } catch (error) {
@@ -91,3 +91,34 @@ exports.updateStatus = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
+
+exports.deleteAppointment = async (req, res) => {
+    try {
+        await Appointment.findByIdAndDelete(req.params.id);
+        res.json({ msg: 'Appointment deleted' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.updateAppointment = async (req, res) => {
+    try {
+        const { date, status } = req.body;
+        let updateData = { date, status };
+        if (status === 'completed') {
+            updateData.visitedAt = new Date();
+        }
+
+        const appointment = await Appointment.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true }
+        );
+        res.json(appointment);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+};
+

@@ -76,11 +76,9 @@ const seedDoctors = async () => {
             const hospital = hospitals[Math.floor(Math.random() * hospitals.length)];
             const district = districts[Math.floor(Math.random() * districts.length)];
 
-            // Use randomuser.me for REAL human photos
-            // We use the index + 10 to get different faces
-            const imageId = (i % 90) + 1; // They have about 99 images
-            const genderDir = docInfo.gender === 'men' ? 'men' : 'women';
-            const image = `https://randomuser.me/api/portraits/${genderDir}/${imageId}.jpg`;
+            // Use local images doc1.png to doc10.png
+            const imageId = (i % 10) + 1;
+            const image = `/doctors/doc${imageId}.png`;
 
             // Generate email
             const nameParts = docInfo.name.replace('Dr.', '').replace(/\./g, '').trim().split(' ');

@@ -5,31 +5,17 @@ const Appointment = require('./models/Appointment');
 
 dotenv.config();
 
-const deleteFirstTwoAppointments = async () => {
+const deleteAllAppointments = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
 
-        // Find all appointments
-        const appointments = await Appointment.find({});
+        const result = await Appointment.deleteMany({});
+        console.log(`Deleted ${result.deletedCount} appointments.`);
 
-        if (appointments.length < 2) {
-            console.log('Less than 2 appointments found. Deleting all...');
-        } else {
-            console.log(`Found ${appointments.length} appointments. Deleting the first 2...`);
-        }
-
-        // Delete the first 2
-        const toDelete = appointments.slice(0, 2);
-
-        for (const apt of toDelete) {
-            await Appointment.findByIdAndDelete(apt._id);
-            console.log(`Deleted appointment with ID: ${apt._id} (Date: ${apt.date})`);
-        }
-
-        console.log('Deletion complete.');
+        console.log('All appointments have been removed.');
         process.exit();
     } catch (error) {
         console.error(error);
@@ -37,4 +23,4 @@ const deleteFirstTwoAppointments = async () => {
     }
 };
 
-deleteFirstTwoAppointments();
+deleteAllAppointments();

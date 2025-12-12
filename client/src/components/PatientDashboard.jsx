@@ -1,7 +1,6 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getUserAppointments, getDoctors } from '../services/api';
+import API, { getUserAppointments, getDoctors } from '../services/api';
 import Button from './ui/Button';
 import Card from './ui/Card';
 
@@ -37,7 +36,7 @@ const PatientDashboard = () => {
     const handleCancel = async (id) => {
         if (!window.confirm("Are you sure you want to cancel this appointment?")) return;
         try {
-            await axios.put(`http://localhost:5000/api/appointments/${id}/status`, { status: 'cancelled' });
+            await API.put(`/appointments/${id}/status`, { status: 'cancelled' });
             setAppointments(appointments.map(apt => apt._id === id ? { ...apt, status: 'cancelled' } : apt));
         } catch (err) {
             console.error("Error cancelling appointment", err);

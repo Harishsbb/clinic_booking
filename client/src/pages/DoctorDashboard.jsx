@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import API from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import { FaUserInjured, FaCalendarCheck, FaClock } from 'react-icons/fa';
@@ -19,7 +19,8 @@ const DoctorDashboard = () => {
                 // Note: We need to ensure the backend supports filtering by doctor ID in the query or body
                 // For now, assuming GET /api/appointments?doctorId=... works or we filter client side if needed (not ideal for prod)
                 // Let's assume we updated the backend to handle ?doctorId query param as per plan
-                const res = await axios.get(`http://localhost:5000/api/appointments?doctorId=${doctorId}`);
+                console.log("Fetching appointments for Doctor ID:", doctorId);
+                const res = await API.get(`/appointments?doctorId=${doctorId}`);
                 setAppointments(res.data);
             } catch (err) {
                 console.error("Error fetching appointments", err);
@@ -37,7 +38,7 @@ const DoctorDashboard = () => {
 
     const handleStatusUpdate = async (id, status) => {
         try {
-            await axios.put(`http://localhost:5000/api/appointments/${id}/status`, { status });
+            await API.put(`/appointments/${id}/status`, { status });
             setAppointments(appointments.map(apt => apt._id === id ? { ...apt, status } : apt));
         } catch (err) {
             console.error("Error updating status", err);
@@ -49,7 +50,7 @@ const DoctorDashboard = () => {
         <div className="min-h-screen bg-transparent py-12 px-4 sm:px-6 lg:px-8 animate-fade-in">
             <div className="max-w-7xl mx-auto space-y-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900 font-heading">Welcome, Dr. {doctorName}</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 font-heading">Welcome, {doctorName}</h1>
                     <p className="text-gray-500 mt-2">Here is your schedule for today.</p>
                 </div>
 

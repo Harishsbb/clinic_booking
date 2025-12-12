@@ -30,6 +30,8 @@ export const deleteDoctor = (id) => API.delete(`/doctors/${id}`);
 export const createBooking = (data) => API.post("/appointments", data);
 export const getUserAppointments = (userId) => API.get(`/appointments?userId=${userId}`);
 export const getAllAppointments = () => API.get("/appointments");
+export const deleteAppointment = (id) => API.delete(`/appointments/${id}`);
+export const updateAppointment = (id, data) => API.put(`/appointments/${id}`, data);
 
 // payment
 export const makePayment = (data) => API.post("/payment/order", data);

@@ -14,7 +14,7 @@ const doctors = [
         image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
         availability: ['Mon-Sat 10am-2pm'],
         docId: 1,
-        hospital: 'Rajarajeswari Hospitals',
+        hospital: 'Rajarajeswari Hospitals Pvt Ltd',
         district: 'Dindigul'
     },
     {
@@ -36,7 +36,7 @@ const doctors = [
         image: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
         availability: ['Tue-Sat 9am-1pm'],
         docId: 3,
-        hospital: 'Vadamalayan Hospitals',
+        hospital: 'Vadamalayan Hospitals Pvt Ltd',
         district: 'Dindigul'
     },
     {
@@ -80,7 +80,7 @@ const doctors = [
         image: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80',
         availability: ['Tue-Sat 4pm-7pm'],
         docId: 7,
-        hospital: 'Shree Sathya Subha Hospital',
+        hospital: 'Shree Sathya Subha Hospital[S3]',
         district: 'Dindigul'
     },
     {
@@ -96,20 +96,40 @@ const doctors = [
     }
 ];
 
+const DoctorAuth = require('./models/DoctorAuth');
+
 const seedDoctors = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI, {
-            // useNewUrlParser: true, // Deprecated in new Mongoose, safe to remove or keep if needed
-            // useUnifiedTopology: true,
-        });
+        await mongoose.connect(process.env.MONGO_URI);
         console.log('MongoDB Connected');
 
-        // Clear existing doctors
+        // Clear existing doctors and doctor auths
         await Doctor.deleteMany({});
-        console.log('Existing doctors cleared');
+        await DoctorAuth.deleteMany({});
+        console.log('Existing doctors and auth records cleared');
 
-        await Doctor.insertMany(doctors);
+        const createdDoctors = await Doctor.insertMany(doctors);
         console.log('Doctors Seeded Successfully');
+
+        // Create Auth entries for each doctor
+        const bcrypt = require('bcryptjs');
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash('password123', salt);
+
+        const doctorAuths = createdDoctors.map(doc => ({
+            doctor: doc._id,
+            email: doc.name.toLowerCase().replace(/dr\. /g, '').replace(/\./g, '').replace(/\s+/g, '') + '@clinic.com',
+            password: hashedPassword
+        }));
+
+        await DoctorAuth.insertMany(doctorAuths);
+        console.log('Doctor Auth Credentials Created');
+
+        console.log('Credentials:');
+        doctorAuths.forEach(auth => {
+            console.log(`Email: ${auth.email}, Password: ${auth.password}`);
+        });
+
         process.exit();
     } catch (err) {
         console.error(err);

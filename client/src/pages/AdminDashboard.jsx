@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import api, { createDoctor, updateDoctor, deleteDoctor, getAllAppointments } from '../services/api';
+import api, { createDoctor, updateDoctor, deleteDoctor, getAllAppointments, deleteAppointment, updateAppointment } from '../services/api';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Card from '../components/ui/Card';
 import { FaUserMd, FaUserInjured, FaCalendarCheck, FaEdit, FaTrash } from 'react-icons/fa';
+import { isSlotAvailable } from '../utils/availabilityValidator';
 
 const AdminDashboard = () => {
     const [doctors, setDoctors] = useState([]);
@@ -20,6 +21,9 @@ const AdminDashboard = () => {
         bio: '',
         availability: ''
     });
+    const [editAppointment, setEditAppointment] = useState(null);
+    const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+    const [appointmentForm, setAppointmentForm] = useState({ date: '', status: '' });
 
     const fetchData = async () => {
         try {
@@ -95,6 +99,61 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleDeleteAppointment = async (id) => {
+        if (window.confirm('Are you sure you want to delete this appointment?')) {
+            try {
+                await deleteAppointment(id);
+                // Optimistic update or refetch
+                setAppointments(appointments.filter(a => a._id !== id));
+                alert('Appointment deleted');
+            } catch (err) {
+                console.error(err);
+                alert('Failed to delete appointment');
+            }
+        }
+    };
+
+    const handleEditAppointment = (apt) => {
+        setEditAppointment(apt);
+        // Format date for datetime-local input (YYYY-MM-DDTHH:mm)
+        const dateObj = new Date(apt.date);
+        // adjust for timezone offset if necessary or use ISO string slice, but simple way:
+        const localIso = new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+
+        setAppointmentForm({
+            date: localIso,
+            status: apt.status
+        });
+        setShowAppointmentModal(true);
+    };
+
+    const handleUpdateAppointment = async (e) => {
+        e.preventDefault();
+        try {
+            // Validate in Admin Dashboard if doctor info is available
+            if (editAppointment && editAppointment.doctor && editAppointment.doctor.availability) {
+                const isValid = isSlotAvailable(appointmentForm.date, editAppointment.doctor.availability);
+                if (!isValid) {
+                    if (!window.confirm(`Warning: The selected time is outside the doctor's availability (${editAppointment.doctor.availability.join(', ')}). Continue anyway?`)) {
+                        return;
+                    }
+                }
+            }
+
+            await updateAppointment(editAppointment._id, {
+                date: appointmentForm.date,
+                status: appointmentForm.status
+            });
+            alert('Appointment updated');
+            setShowAppointmentModal(false);
+            setEditAppointment(null);
+            fetchData(); // Refetch to show changes
+        } catch (err) {
+            console.error(err);
+            alert('Failed to update appointment');
+        }
+    };
+
     const resetForm = () => {
         setNewDoctor({ name: '', specialty: '', fee: '', image: '', bio: '', availability: '' });
         setIsEditing(false);
@@ -160,8 +219,10 @@ const AdminDashboard = () => {
                                     <tr className="text-gray-400 text-sm border-b border-gray-100">
                                         <th className="pb-4 font-medium pl-2">Patient Name</th>
                                         <th className="pb-4 font-medium">Doctor</th>
+                                        <th className="pb-4 font-medium">Amount</th>
                                         <th className="pb-4 font-medium">Date & Time</th>
                                         <th className="pb-4 font-medium">Status</th>
+                                        <th className="pb-4 font-medium text-right pr-2">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-sm">
@@ -173,13 +234,38 @@ const AdminDashboard = () => {
                                             <td className="py-4 text-gray-600">
                                                 {apt.doctor ? apt.doctor.name : 'Unknown Doctor'}
                                             </td>
+                                            <td className="py-4 text-gray-900 font-bold">
+                                                ₹{apt.doctor ? apt.doctor.fee : '-'}
+                                            </td>
                                             <td className="py-4 text-gray-500">
                                                 {new Date(apt.date).toLocaleString()}
                                             </td>
                                             <td className="py-4">
-                                                <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                                    Confirmed
+                                                <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${apt.status === 'completed' ? 'bg-blue-100 text-blue-800' :
+                                                        apt.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                                            apt.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                                'bg-green-100 text-green-800'
+                                                    }`}>
+                                                    {apt.status || 'pending'}
                                                 </span>
+                                            </td>
+                                            <td className="py-4 text-right pr-2">
+                                                <div className="flex gap-2 justify-end">
+                                                    <button
+                                                        onClick={() => handleEditAppointment(apt)}
+                                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                                                        title="Edit Appointment"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteAppointment(apt._id)}
+                                                        className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                                                        title="Delete Appointment"
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -311,6 +397,45 @@ const AdminDashboard = () => {
                             <div className="flex justify-end gap-3 mt-6">
                                 <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>Cancel</Button>
                                 <Button type="submit">{isEditing ? 'Update Doctor' : 'Save Doctor'}</Button>
+                            </div>
+                        </form>
+                    </Card>
+                </div>
+            )}
+
+            {/* Edit Appointment Modal */}
+            {showAppointmentModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <Card className="w-full max-w-md p-6 bg-white">
+                        <h3 className="text-xl font-bold mb-4 font-heading">Edit Appointment</h3>
+                        <form onSubmit={handleUpdateAppointment} className="space-y-4">
+                            <div className="mb-4 space-y-2 bg-gray-50 p-3 rounded-md border border-gray-100">
+                                <p className="text-sm text-gray-600"><span className="font-semibold">Patient:</span> {editAppointment?.user?.name || 'Unknown'}</p>
+                                <p className="text-sm text-gray-600"><span className="font-semibold">Doctor:</span> {editAppointment?.doctor?.name || 'Unknown'}</p>
+                            </div>
+                            <Input
+                                type="datetime-local"
+                                label="Date & Time"
+                                value={appointmentForm.date}
+                                onChange={(e) => setAppointmentForm({ ...appointmentForm, date: e.target.value })}
+                                required
+                            />
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select
+                                    value={appointmentForm.status}
+                                    onChange={(e) => setAppointmentForm({ ...appointmentForm, status: e.target.value })}
+                                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm p-2 border"
+                                >
+                                    <option value="pending">Pending</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <div className="flex justify-end gap-3 mt-6">
+                                <Button type="button" variant="ghost" onClick={() => setShowAppointmentModal(false)}>Cancel</Button>
+                                <Button type="submit">Update Appointment</Button>
                             </div>
                         </form>
                     </Card>

@@ -5,7 +5,7 @@ exports.getAllDoctors = async (req, res) => {
         const { hospital } = req.query;
         let query = {};
         if (hospital) {
-            query.hospital = hospital;
+            query.hospital = { $regex: hospital, $options: 'i' };
         }
         const doctors = await Doctor.find(query).lean();
         res.json(doctors);

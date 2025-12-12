@@ -22,7 +22,6 @@ const Doctors = () => {
         bio: '',
         availability: '',
         hospital: '',
-        hospital: '',
         district: '',
         email: ''
     });
@@ -96,7 +95,6 @@ const Doctors = () => {
             image: doctor.image || '',
             bio: doctor.bio || '',
             availability: doctor.availability ? doctor.availability.join(', ') : '',
-            hospital: doctor.hospital || '',
             hospital: doctor.hospital || '',
             district: doctor.district || '',
             email: doctor.email || ''

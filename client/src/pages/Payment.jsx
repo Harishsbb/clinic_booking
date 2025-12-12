@@ -163,7 +163,7 @@ const Payment = () => {
                                 <p className="text-sm font-medium text-gray-600 mb-3">Scan & Pay</p>
                                 <div className="bg-white p-2 rounded shadow-sm mb-3">
                                     <img
-                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=bavaharishkumar-9@okaxis&pn=MediCare+&am=${fee}`}
+                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`upi://pay?pa=bavaharishkumar-9@okaxis&pn=Clinic Booking&am=${fee}&cu=INR`)}`}
                                         alt="UPI QR Code"
                                         className="w-32 h-32"
                                     />

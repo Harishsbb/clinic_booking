@@ -76,7 +76,7 @@ const DoctorLogin = () => {
                                         type="email"
                                         required
                                         className="pl-10"
-                                        placeholder="doctor@example.com"
+                                        placeholder="doctor@clinic.com"
                                         value={formData.email}
                                         onChange={handleChange}
                                     />

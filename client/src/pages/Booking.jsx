@@ -100,11 +100,11 @@ const Booking = () => {
         <div className="animate-fade-in min-h-screen bg-transparent py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto">
                 <div className="mb-10 text-center">
-                    <h2 className="text-4xl font-extrabold text-gray-900 font-heading tracking-tight">Book Appointment</h2>
-                    <p className="text-lg text-gray-600 mt-2">Schedule a consultation with one of our expert specialists.</p>
+                    <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white font-heading tracking-tight">Book Appointment</h2>
+                    <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">Schedule a consultation with one of our expert specialists.</p>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
                     <div className="bg-primary-600 px-8 py-6">
                         <h3 className="text-white text-xl font-bold">Appointment Details</h3>
                         <p className="text-primary-100 text-sm mt-1">Please fill in the information below to secure your slot.</p>
@@ -113,7 +113,7 @@ const Booking = () => {
                     <form className="p-8 space-y-8" onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                             <div className="sm:col-span-6">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Doctor ID / Reference</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Doctor ID / Reference</label>
                                 <div className="relative rounded-md shadow-sm">
                                     <Input
                                         id="doctorId"
@@ -139,8 +139,8 @@ const Booking = () => {
                             </div>
 
                             {doctorAvailability && doctorAvailability.length > 0 && (
-                                <div className="sm:col-span-6 bg-blue-50 p-5 rounded-lg border border-blue-100">
-                                    <h4 className="text-sm font-bold text-blue-800 mb-3 flex items-center">
+                                <div className="sm:col-span-6 bg-blue-50 dark:bg-blue-900/30 p-5 rounded-lg border border-blue-100 dark:border-blue-800">
+                                    <h4 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-3 flex items-center">
                                         <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" /></svg>
                                         Doctor's Availability
                                     </h4>

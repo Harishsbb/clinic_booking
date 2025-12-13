@@ -54,12 +54,12 @@ const Payment = () => {
 
     return (
         <div className="max-w-2xl mx-auto animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Payment Details</h2>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Payment Details</h2>
 
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-                <div className="mb-6 p-4 bg-primary-50 rounded-lg flex justify-between items-center">
-                    <span className="text-gray-700 font-medium">Total Amount to Pay</span>
-                    <span className="text-2xl font-bold text-primary-700">₹{fee}</span>
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div className="mb-6 p-4 bg-primary-50 dark:bg-primary-900/30 rounded-lg flex justify-between items-center">
+                    <span className="text-gray-700 dark:text-gray-300 font-medium">Total Amount to Pay</span>
+                    <span className="text-2xl font-bold text-primary-700 dark:text-primary-400">₹{fee}</span>
                 </div>
 
                 {/* Payment Method Tabs */}

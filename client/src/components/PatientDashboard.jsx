@@ -49,8 +49,8 @@ const PatientDashboard = () => {
             <div className="max-w-7xl mx-auto space-y-8">
                 <div className="flex justify-between items-center">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900 font-heading">Welcome, {userName}</h1>
-                        <p className="text-gray-500 mt-2">Manage your health and appointments.</p>
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-heading">Welcome, {userName}</h1>
+                        <p className="text-gray-500 dark:text-gray-400 mt-2">Manage your health and appointments.</p>
                     </div>
                     <Link to="/booking">
                         <Button size="lg">Book New Appointment</Button>

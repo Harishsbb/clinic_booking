@@ -14,7 +14,7 @@ const Settings = () => {
                 <div className="flex items-center justify-between">
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Appearance</h3>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Customize how the application looks.</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Customize how the application looks. Switch between Light and Dark mode.</p>
                     </div>
 
                     <button

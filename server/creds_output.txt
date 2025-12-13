@@ -1,0 +1,30 @@
+
+=== DOCTOR LOGIN CREDENTIALS ===
+Default Password (set during migration): 12345
+Note: If the doctor has changed their password, this default custom password will not work.
+===================================
+
+Doctor Name: Dr. K. Rajesh
+Login Email: krajesh@clinic.com
+-------------------
+Doctor Name: Dr. S. Mahalakshmi
+Login Email: smahalakshmi@clinic.com
+-------------------
+Doctor Name: Dr. M. Kumar
+Login Email: mkumar@clinic.com
+-------------------
+Doctor Name: Dr. R. Anitha
+Login Email: ranitha@clinic.com
+-------------------
+Doctor Name: Dr. P. Suresh
+Login Email: psuresh@clinic.com
+-------------------
+Doctor Name: Dr. T. Venkatesh
+Login Email: tvenkatesh@clinic.com
+-------------------
+Doctor Name: Dr. A. Meera
+Login Email: ameera@clinic.com
+-------------------
+Doctor Name: Dr. K. Ganesh
+Login Email: kganesh@clinic.com
+-------------------

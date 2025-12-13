@@ -133,8 +133,8 @@ const Doctors = () => {
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <div>
-                        <h2 className="text-3xl font-bold text-gray-900 font-heading">Our Doctors</h2>
-                        <p className="text-gray-500 mt-2">Meet our team of specialized healthcare professionals.</p>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white font-heading">Our Doctors</h2>
+                        <p className="text-gray-500 dark:text-gray-400 mt-2">Meet our team of specialized healthcare professionals.</p>
                     </div>
 
                     <div className="flex gap-4 w-full md:w-auto items-center">

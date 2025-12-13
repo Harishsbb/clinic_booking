@@ -39,22 +39,22 @@ const DoctorCard = ({ doctor, onEdit, onDelete }) => {
 
             <div className="flex items-center justify-between mb-2">
                 <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Available</span>
-                <span className="text-xs font-bold text-gray-500">ID: {doctor.docId}</span>
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400">ID: {doctor.docId}</span>
             </div>
 
-            <h3 className="text-lg font-bold text-gray-900 mb-1 font-heading">{doctor.name}</h3>
-            <p className="text-primary-600 font-medium text-sm mb-1">{doctor.specialty}</p>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 font-heading">{doctor.name}</h3>
+            <p className="text-primary-600 dark:text-primary-400 font-medium text-sm mb-1">{doctor.specialty}</p>
             {doctor.hospital && (
-                <p className="text-gray-500 text-xs mb-1 font-medium">{doctor.hospital}{doctor.district ? `, ${doctor.district}` : ''}</p>
+                <p className="text-gray-500 dark:text-gray-400 text-xs mb-1 font-medium">{doctor.hospital}{doctor.district ? `, ${doctor.district}` : ''}</p>
             )}
-            <p className="text-gray-900 font-bold text-sm mb-3">₹{doctor.fee || 100} / Visit</p>
+            <p className="text-gray-900 dark:text-white font-bold text-sm mb-3">₹{doctor.fee || 100} / Visit</p>
 
             {doctor.availability && doctor.availability.length > 0 && (
                 <div className="mb-4">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Availability</p>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Availability</p>
                     <div className="flex flex-wrap gap-2">
                         {doctor.availability.map((slot, index) => (
-                            <span key={index} className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md border border-blue-100">
+                            <span key={index} className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 text-xs rounded-md border border-blue-100 dark:border-blue-800">
                                 {slot}
                             </span>
                         ))}
@@ -62,7 +62,7 @@ const DoctorCard = ({ doctor, onEdit, onDelete }) => {
                 </div>
             )}
 
-            <p className="text-gray-500 text-sm mb-6 line-clamp-2">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 line-clamp-2">
                 {doctor.bio || 'Experienced specialist dedicated to providing the best patient care with years of medical practice.'}
             </p>
 

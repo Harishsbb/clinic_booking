@@ -50,51 +50,51 @@ const DoctorDashboard = () => {
         <div className="min-h-screen bg-transparent py-12 px-4 sm:px-6 lg:px-8 animate-fade-in">
             <div className="max-w-7xl mx-auto space-y-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900 font-heading">Welcome, {doctorName}</h1>
-                    <p className="text-gray-500 mt-2">Here is your schedule for today.</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-heading">Welcome, {doctorName}</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">Here is your schedule for today.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <Card className="p-6 flex items-center gap-4 border-l-4 border-blue-500 bg-white/80 backdrop-blur-md">
-                        <div className="p-4 rounded-full bg-blue-100 text-blue-600">
+                    <Card className="p-6 flex items-center gap-4 border-l-4 border-blue-500 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md">
+                        <div className="p-4 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-200">
                             <FaCalendarCheck className="text-xl" />
                         </div>
                         <div>
-                            <p className="text-sm text-gray-500 font-medium">Total Appointments</p>
-                            <h3 className="text-2xl font-bold text-gray-900">{appointments.length}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Total Appointments</p>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{appointments.length}</h3>
                         </div>
                     </Card>
-                    <Card className="p-6 flex items-center gap-4 border-l-4 border-green-500 bg-white/80 backdrop-blur-md">
-                        <div className="p-4 rounded-full bg-green-100 text-green-600">
+                    <Card className="p-6 flex items-center gap-4 border-l-4 border-green-500 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md">
+                        <div className="p-4 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-200">
                             <FaUserInjured className="text-xl" />
                         </div>
                         <div>
-                            <p className="text-sm text-gray-500 font-medium">Unique Patients</p>
-                            <h3 className="text-2xl font-bold text-gray-900">{new Set(appointments.map(a => a.user?._id)).size}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Unique Patients</p>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{new Set(appointments.map(a => a.user?._id)).size}</h3>
                         </div>
                     </Card>
-                    <Card className="p-6 flex items-center gap-4 border-l-4 border-purple-500 bg-white/80 backdrop-blur-md">
-                        <div className="p-4 rounded-full bg-purple-100 text-purple-600">
+                    <Card className="p-6 flex items-center gap-4 border-l-4 border-purple-500 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md">
+                        <div className="p-4 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-200">
                             <FaClock className="text-xl" />
                         </div>
                         <div>
-                            <p className="text-sm text-gray-500 font-medium">Coming Up</p>
-                            <h3 className="text-2xl font-bold text-gray-900">{appointments.filter(a => new Date(a.date) > new Date() && a.status !== 'completed' && a.status !== 'cancelled').length}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Coming Up</p>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{appointments.filter(a => new Date(a.date) > new Date() && a.status !== 'completed' && a.status !== 'cancelled').length}</h3>
                         </div>
                     </Card>
                 </div>
 
-                <Card className="p-6 bg-white/90 backdrop-blur-md">
-                    <h2 className="text-xl font-bold text-gray-800 mb-6 font-heading">My Appointments</h2>
+                <Card className="p-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md">
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 font-heading">My Appointments</h2>
                     {loading ? (
-                        <p>Loading schedule...</p>
+                        <p className="dark:text-gray-300">Loading schedule...</p>
                     ) : appointments.length === 0 ? (
-                        <p className="text-gray-500">No appointments found.</p>
+                        <p className="text-gray-500 dark:text-gray-400">No appointments found.</p>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
-                                    <tr className="text-gray-400 text-sm border-b border-gray-100">
+                                    <tr className="text-gray-400 text-sm border-b border-gray-100 dark:border-gray-700">
                                         <th className="pb-4 font-medium pl-2">Patient Name</th>
                                         <th className="pb-4 font-medium">Date & Time</th>
                                         <th className="pb-4 font-medium">Contact</th>
@@ -104,25 +104,25 @@ const DoctorDashboard = () => {
                                 </thead>
                                 <tbody className="text-sm">
                                     {appointments.map((apt) => (
-                                        <tr key={apt._id} className="border-b border-gray-50 last:border-none hover:bg-gray-50/50 transition-colors">
-                                            <td className="py-4 pl-2 font-medium text-gray-700">
+                                        <tr key={apt._id} className="border-b border-gray-50 dark:border-gray-700 last:border-none hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors">
+                                            <td className="py-4 pl-2 font-medium text-gray-700 dark:text-gray-200">
                                                 {apt.user ? apt.user.name : 'Unknown Patient'}
                                             </td>
-                                            <td className="py-4 text-gray-600">
+                                            <td className="py-4 text-gray-600 dark:text-gray-300">
                                                 {new Date(apt.date).toLocaleString()}
                                                 {apt.status === 'completed' && apt.visitedAt && (
-                                                    <div className="text-xs text-green-600 font-medium mt-1">
+                                                    <div className="text-xs text-green-600 dark:text-green-400 font-medium mt-1">
                                                         Visited: {new Date(apt.visitedAt).toLocaleString()}
                                                     </div>
                                                 )}
                                             </td>
-                                            <td className="py-4 text-gray-500">
+                                            <td className="py-4 text-gray-500 dark:text-gray-400">
                                                 {apt.user?.email || 'N/A'}
                                             </td>
                                             <td className="py-4">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${apt.status === 'completed' ? 'bg-blue-100 text-blue-700' :
-                                                    apt.status === 'cancelled' ? 'bg-red-100 text-red-700' :
-                                                        'bg-green-100 text-green-700'
+                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${apt.status === 'completed' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
+                                                    apt.status === 'cancelled' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
+                                                        'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                                     }`}>
                                                     {apt.status || 'Confirmed'}
                                                 </span>
@@ -132,13 +132,13 @@ const DoctorDashboard = () => {
                                                     <div className="flex justify-end gap-2">
                                                         <button
                                                             onClick={() => handleStatusUpdate(apt._id, 'completed')}
-                                                            className="text-blue-600 hover:text-blue-800 text-xs font-bold uppercase"
+                                                            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-xs font-bold uppercase"
                                                         >
                                                             Complete
                                                         </button>
                                                         <button
                                                             onClick={() => handleStatusUpdate(apt._id, 'cancelled')}
-                                                            className="text-red-600 hover:text-red-800 text-xs font-bold uppercase"
+                                                            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-xs font-bold uppercase"
                                                         >
                                                             Cancel
                                                         </button>

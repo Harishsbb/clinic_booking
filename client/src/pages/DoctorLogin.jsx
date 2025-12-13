@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import API from '../services/api';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { FaUserMd, FaLock } from 'react-icons/fa';
@@ -25,7 +24,7 @@ const DoctorLogin = () => {
         setError('');
 
         try {
-            const res = await axios.post('http://localhost:5000/api/doctor/auth/login', formData);
+            const res = await API.post('/doctor/auth/login', formData);
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('name', res.data.name);
             localStorage.setItem('role', 'doctor');

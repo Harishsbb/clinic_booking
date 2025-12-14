@@ -1,0 +1,11 @@
+Vercel CLI 41.4.1
+Retrieving project…
+Deploying harish-ks-projects-091e87d3/server
+Uploading [--------------------] (0.0B/85B)
+Uploading [====================] (85.0B/85B)
+Inspect: https://vercel.com/harish-ks-projects-091e87d3/server/4nbkG6kVmN3q3nMbDaa2RjxV7pAq [2s]
+Production: https://server-1hqi1ao7a-harish-ks-projects-091e87d3.vercel.app [2s]
+https://server-1hqi1ao7a-harish-ks-projects-091e87d3.vercel.appQueued
+Building
+Completing
+Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Settings will not apply. Learn More: https://vercel.link/unused-build-settings

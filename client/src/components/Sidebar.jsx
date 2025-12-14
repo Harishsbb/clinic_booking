@@ -67,7 +67,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                             <NavItem to="/dashboard" icon={FaHome} label="Dashboard" />
                             <NavItem to="/doctors" icon={FaUserMd} label="Doctors" />
                             <NavItem to="/hospitals" icon={FaHospital} label="Hospitals" />
-                            <NavItem to="/booking" icon={FaCalendarAlt} label="Appointment Book" />
+                            <NavItem to="/booking" icon={FaCalendarAlt} label="Book Appointment" />
                             <NavItem to="/payment" icon={FaCreditCard} label="Payment" />
                         </>
                     )}

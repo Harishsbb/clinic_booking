@@ -14,7 +14,8 @@ const AdminDashboard = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [currentDoctorId, setCurrentDoctorId] = useState(null);
     const [newDoctor, setNewDoctor] = useState({
-        name: '',
+        name: 'Dr. ',
+        initial: '',
         specialty: '',
         fee: '',
         image: '',
@@ -24,6 +25,20 @@ const AdminDashboard = () => {
     const [editAppointment, setEditAppointment] = useState(null);
     const [showAppointmentModal, setShowAppointmentModal] = useState(false);
     const [appointmentForm, setAppointmentForm] = useState({ date: '', status: '' });
+    const [slotBuilder, setSlotBuilder] = useState({
+        fromDay: 'Mon',
+        toDay: '',
+        startH: '1',
+        startM: '00',
+        startAmpm: 'am',
+        endH: '1',
+        endM: '00',
+        endAmpm: 'pm'
+    });
+
+    const handleBuilderChange = (e) => {
+        setSlotBuilder({ ...slotBuilder, [e.target.name]: e.target.value });
+    };
 
     const fetchData = async () => {
         try {
@@ -53,7 +68,7 @@ const AdminDashboard = () => {
         try {
             const doctorData = {
                 ...newDoctor,
-                availability: newDoctor.availability.split(',').map(item => item.trim())
+                availability: newDoctor.availability.split(',').map(item => item.trim()).filter(item => item)
             };
 
             if (isEditing) {
@@ -75,6 +90,8 @@ const AdminDashboard = () => {
     const handleEditDoctor = (doctor) => {
         setNewDoctor({
             name: doctor.name,
+            initial: doctor.initial || '',
+            email: doctor.email || '',
             specialty: doctor.specialty,
             fee: doctor.fee,
             image: doctor.image || '',
@@ -155,7 +172,7 @@ const AdminDashboard = () => {
     };
 
     const resetForm = () => {
-        setNewDoctor({ name: '', specialty: '', fee: '', image: '', bio: '', availability: '' });
+        setNewDoctor({ name: 'Dr. ', initial: '', email: '', specialty: '', fee: '', image: '', bio: '', availability: '' });
         setIsEditing(false);
         setCurrentDoctorId(null);
     };
@@ -242,9 +259,9 @@ const AdminDashboard = () => {
                                             </td>
                                             <td className="py-4">
                                                 <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${apt.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                                                        apt.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                                            apt.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                                'bg-green-100 text-green-800'
+                                                    apt.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                                        apt.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                            'bg-green-100 text-green-800'
                                                     }`}>
                                                     {apt.status || 'pending'}
                                                 </span>
@@ -294,13 +311,17 @@ const AdminDashboard = () => {
                                 {doctors.map((doctor) => (
                                     <tr key={doctor._id} className="border-b border-gray-50 last:border-none hover:bg-gray-50 transition-colors">
                                         <td className="py-4 pl-2 text-gray-500">#{doctor.docId}</td>
-                                        <td className="py-4 font-medium text-gray-700">{doctor.name}</td>
+                                        <td className="py-4 font-medium text-gray-700">
+                                            {doctor.name.startsWith('Dr.')
+                                                ? `Dr. ${doctor.initial ? doctor.initial + '.' : ''} ${doctor.name.replace('Dr.', '').trim()}`
+                                                : `${doctor.initial ? doctor.initial + '.' : ''} ${doctor.name}`}
+                                        </td>
                                         <td className="py-4 text-gray-500">{doctor.specialty}</td>
                                         <td className="py-4 text-gray-900 font-bold">₹{doctor.fee}</td>
                                         <td className="py-4 text-gray-500">
                                             {doctor.availability && doctor.availability.length > 0 ? (
                                                 <div className="flex flex-wrap gap-1">
-                                                    {doctor.availability.map((slot, i) => (
+                                                    {doctor.availability.filter(Boolean).map((slot, i) => (
                                                         <span key={i} className="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded">
                                                             {slot}
                                                         </span>
@@ -351,6 +372,21 @@ const AdminDashboard = () => {
                                 placeholder="Dr. John Doe"
                             />
                             <Input
+                                label="Initial"
+                                name="initial"
+                                value={newDoctor.initial || ''}
+                                onChange={handleInputChange}
+                                placeholder="K"
+                            />
+                            <Input
+                                label="Email"
+                                name="email"
+                                type="email"
+                                value={newDoctor.email || ''}
+                                onChange={handleInputChange}
+                                placeholder="doctor@clinic.com"
+                            />
+                            <Input
                                 label="Specialty"
                                 name="specialty"
                                 value={newDoctor.specialty}
@@ -375,14 +411,112 @@ const AdminDashboard = () => {
                                 onChange={handleInputChange}
                                 placeholder="https://example.com/doctor.jpg"
                             />
-                            <Input
-                                label="Duty Time (Availability)"
-                                name="availability"
-                                value={newDoctor.availability || ''}
-                                onChange={handleInputChange}
-                                placeholder="e.g., Mon-Fri 9am-5pm, Sat 10am-2pm"
-                                required
-                            />
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Duty Time (Availability)</label>
+
+                                {/* Availability Builder */}
+                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-2">
+                                    <div className="grid grid-cols-2 gap-2 mb-2">
+                                        <div>
+                                            <span className="text-xs text-gray-500 block mb-1">From Day</span>
+                                            <select
+                                                name="fromDay"
+                                                value={slotBuilder.fromDay}
+                                                onChange={handleBuilderChange}
+                                                className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                                            >
+                                                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => <option key={d} value={d}>{d}</option>)}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <span className="text-xs text-gray-500 block mb-1">To Day (Optional)</span>
+                                            <select
+                                                name="toDay"
+                                                value={slotBuilder.toDay}
+                                                onChange={handleBuilderChange}
+                                                className="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                                            >
+                                                <option value="">-</option>
+                                                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => <option key={d} value={d}>{d}</option>)}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4 mb-3">
+                                        <div>
+                                            <span className="text-xs text-gray-500 block mb-1">Start Time</span>
+                                            <div className="flex gap-1">
+                                                <select name="startH" value={slotBuilder.startH} onChange={handleBuilderChange} className="w-full text-sm border-gray-300 rounded-md p-1">
+                                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(h => <option key={h} value={h}>{h}</option>)}
+                                                </select>
+                                                <select name="startM" value={slotBuilder.startM} onChange={handleBuilderChange} className="w-full text-sm border-gray-300 rounded-md p-1">
+                                                    {['00', '15', '30', '45'].map(m => <option key={m} value={m}>{m}</option>)}
+                                                </select>
+                                                <select name="startAmpm" value={slotBuilder.startAmpm} onChange={handleBuilderChange} className="w-full text-sm border-gray-300 rounded-md p-1">
+                                                    <option value="am">AM</option>
+                                                    <option value="pm">PM</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span className="text-xs text-gray-500 block mb-1">End Time</span>
+                                            <div className="flex gap-1">
+                                                <select name="endH" value={slotBuilder.endH} onChange={handleBuilderChange} className="w-full text-sm border-gray-300 rounded-md p-1">
+                                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(h => <option key={h} value={h}>{h}</option>)}
+                                                </select>
+                                                <select name="endM" value={slotBuilder.endM} onChange={handleBuilderChange} className="w-full text-sm border-gray-300 rounded-md p-1">
+                                                    {['00', '15', '30', '45'].map(m => <option key={m} value={m}>{m}</option>)}
+                                                </select>
+                                                <select name="endAmpm" value={slotBuilder.endAmpm} onChange={handleBuilderChange} className="w-full text-sm border-gray-300 rounded-md p-1">
+                                                    <option value="am">AM</option>
+                                                    <option value="pm">PM</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="w-full py-2 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            const { fromDay, toDay, startH, startM, startAmpm, endH, endM, endAmpm } = slotBuilder;
+
+                                            const dayString = toDay && toDay !== fromDay ? `${fromDay}-${toDay}` : fromDay;
+                                            const timeString = `${startH}:${startM}${startAmpm}-${endH}:${endM}${endAmpm}`;
+                                            const newSlot = `${dayString} ${timeString}`;
+
+                                            setNewDoctor(prev => {
+                                                const currentSlots = prev.availability ? prev.availability.split(', ').filter(Boolean) : [];
+                                                const updatedSlots = [...currentSlots, newSlot];
+                                                return { ...prev, availability: updatedSlots.join(', ') };
+                                            });
+                                        }}
+                                    >
+                                        Add Slot
+                                    </button>
+                                </div>
+
+                                {/* Active Slots List */}
+                                <div className="space-y-2">
+                                    {newDoctor.availability && newDoctor.availability.split(', ').filter(Boolean).map((slot, index) => (
+                                        <div key={index} className="flex justify-between items-center bg-blue-50 px-3 py-2 rounded text-sm text-blue-700">
+                                            <span>{slot}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const slots = newDoctor.availability.split(', ').filter(Boolean);
+                                                    const newSlots = slots.filter((_, i) => i !== index);
+                                                    setNewDoctor({ ...newDoctor, availability: newSlots.join(', ') });
+                                                }}
+                                                className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full p-1"
+                                            >
+                                                <FaTrash />
+                                            </button>
+                                        </div>
+                                    ))}
+                                    {(!newDoctor.availability) && <p className="text-xs text-gray-500 italic">No availability slots added yet.</p>}
+                                </div>
+                            </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
                                 <textarea

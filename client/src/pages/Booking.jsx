@@ -12,7 +12,7 @@ const Booking = () => {
         doctorId: '',
         date: '',
     });
-    const [fee, setFee] = useState(100); // Default fee
+    const [fee, setFee] = useState(0); // Default fee 0 as requested
     const [loading, setLoading] = useState(false);
     const [doctorAvailability, setDoctorAvailability] = useState([]);
     const [doctors, setDoctors] = useState([]);
@@ -53,7 +53,7 @@ const Booking = () => {
             );
 
             if (doctor) {
-                setFee(doctor.fee || 100);
+                setFee(doctor.fee || 0);
                 setDoctorAvailability(doctor.availability || []);
             }
         }

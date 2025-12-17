@@ -59,6 +59,7 @@ const AdminLogin = () => {
                                     name="email"
                                     type="email"
                                     label="Email address"
+                                    autoComplete="off"
                                     placeholder="admin@medicare.com"
                                     required
                                     value={formData.email}
@@ -70,6 +71,7 @@ const AdminLogin = () => {
                                     name="password"
                                     type="password"
                                     label="Password"
+                                    autoComplete="new-password"
                                     placeholder="••••••••"
                                     required
                                     value={formData.password}

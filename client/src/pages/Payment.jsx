@@ -15,7 +15,7 @@ const Payment = () => {
         upiId: '',
     });
     const [loading, setLoading] = useState(false);
-    const [fee, setFee] = useState(100);
+    const [fee, setFee] = useState(0);
 
     useEffect(() => {
         if (location.state?.fee) {

@@ -75,6 +75,7 @@ const DoctorLogin = () => {
                                         type="email"
                                         required
                                         className="pl-10"
+                                        autoComplete="off"
                                         placeholder="doctor@clinic.com"
                                         value={formData.email}
                                         onChange={handleChange}
@@ -93,6 +94,7 @@ const DoctorLogin = () => {
                                         type="password"
                                         required
                                         className="pl-10"
+                                        autoComplete="new-password"
                                         placeholder="••••••••"
                                         value={formData.password}
                                         onChange={handleChange}
